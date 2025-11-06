@@ -36,6 +36,18 @@ def init():
             read_data = json.load(file)
             for read_task in read_data:
                 data.append(Task(**read_task))
+            for task in data:
+                task.deadline = datetime.strptime(task.deadline, '%Y-%m-%d %H:%M')
+                task.created_at = datetime.strptime(task.created_at, '%Y-%m-%d %H:%M')
+                task.closed_at = datetime.strptime(task.closed_at, '%Y-%m-%d %H:%M')
+                if task.status == "待处理":
+                    task.status = TaskStatus.PENDING
+                elif task.status == "已完成":
+                    task.status = TaskStatus.COMPLETED
+                elif task.status == "已取消":
+                    task.status = TaskStatus.CANCELED
+                elif task.status == "已逾期":
+                    task.status = TaskStatus.OVERDUE
     except BaseException:
         return None
 
@@ -69,7 +81,7 @@ def delete_task(task_id: int):
             data.remove(read_task)
 
 def update_task(task: Task):
-    if task.status == TaskStatus.PENDING and task.deadline > datetime.now():
+    if task.status == TaskStatus.PENDING and task.deadline < datetime.now():
         task.status = TaskStatus.OVERDUE
     return None
 
@@ -84,7 +96,6 @@ def save_data():
                       'created_at': task.created_at.strftime('%Y-%m-%d %H:%M'),
                       'closed_at': task.created_at.strftime('%Y-%m-%d %H:%M'),
                       'starred': task.starred})
-        print(tasks)
         # 获取当前文件的绝对路径
         current_file = __file__
         # 获取当前文件所在目录（app包目录）

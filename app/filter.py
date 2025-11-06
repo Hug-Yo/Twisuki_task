@@ -47,23 +47,26 @@ class Filter:
         self.task_list = task_list
     
     def by_status(self, status: TaskStatus):
+        select_tasks = []
         for task in self.task_list:
-            if task.status != status:
-                self.task_list.remove(task)
+            if task.status == status:
+                select_tasks.append(task)
+            self.task_list = select_tasks
         return self
     
     def by_starred(self, starred: bool):
+        select_tasks = []
         for task in self.task_list:
-            if task.starred != starred:
-                self.task_list.remove(task)
-        ...
+            if task.starred == starred:
+                select_tasks.append(task)
+            self.task_list = select_tasks
         return self
     
     def order_by_create(self, order: Order):
         if order == Order.ASC:
-            self.task_list.sort(key=lambda task: task.create_time, reverse=False)
+            self.task_list.sort(key=lambda task: task.created_at, reverse=False)
         elif order == Order.DESC:
-            self.task_list.sort(key=lambda task: task.create_time, reverse=True)
+            self.task_list.sort(key=lambda task: task.created_at, reverse=True)
         return self
     
     def order_by_deadline(self, order: Order):

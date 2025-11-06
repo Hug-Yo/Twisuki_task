@@ -18,12 +18,12 @@ def show_task_list(tasks: List[Task]):
     # 打印任务列表
     print(
 """
-title           status              starred         id
+title          status             starred        id
 """)
     for task in tasks:
         print(
 f"""
-{task.title}    {task.status}    {task.starred}     {task.id}
+{task.title}            {task.status.value}            {task.starred}             {task.id}
 """)
 
 def show_task_detail(task: Task):
@@ -34,7 +34,7 @@ title           status          starred         created_at          closed_at   
 """)
     print(
 f"""
-{task.title}    {task.status}    {task.starred} {task.created_at}   {task.closed_at}   {task.deadline}  {task.description}
+{task.title}        {task.status.value}        {task.starred}     {task.created_at.strftime('%Y-%m-%d %H:%M')}       {task.closed_at.strftime('%Y-%m-%d %H:%M')}       {task.deadline.strftime('%Y-%m-%d %H:%M')}      {task.description}
 """)
 
 def create_task():
@@ -108,8 +108,7 @@ input:
             show_task_list(data)
 
         if ans == '0':
-            is_over = True
-        
+            is_over = False
         # 退出程序
         if not is_over:
             break
