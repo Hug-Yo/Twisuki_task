@@ -44,5 +44,3 @@ def create_task_info(title: str, deadline: str, description: str, starred: bool)
         ct(task)
         return None
 
-def get_now_time() -> datetime:
-    return datetime.now()

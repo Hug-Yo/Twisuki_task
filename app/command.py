@@ -50,15 +50,10 @@ def create_task():
 
 def edit_task(task: Task, title: str | None , deadline: datetime | None, status : TaskStatus | None , description: str | None, starred: bool | None):
     # 编辑任务
-    if title is str:
         task.title = title
-    if deadline is datetime:
         task.deadline = deadline
-    if status is str:
         task.status = status
-    if description is str:
         task.description = description
-    if starred is bool:
         task.starred = starred
 
 def app():
@@ -75,8 +70,9 @@ query starred task(input 'starred')
 query completed task(input 'completed)
 query newest task(input 'newest')
 query task details(input the task id)
+edit task(input 'edit')
 update task(input 'update')
-exit(press 0)
+exit(input 'exit')
 input:
 """)
         # 以查询星标任务为例:
@@ -85,34 +81,65 @@ input:
             show_task_list(tasks)
             
         # 一些其他的例子
-        if ans == 'completed':
+        elif ans == 'completed':
             tasks = get_completed_tasks()
             show_task_list(tasks)
             
-        if ans == 'newest':
+        elif ans == 'newest':
             task = get_newest_task()
             show_task_detail(task)
 
-        if ans == 'create':
+        elif ans == 'create':
             task_info = create_task()
             create_task_info(*task_info)
             show_task_list(data)
             save_data()
 
-        if ans == 'update':
+        elif ans == 'update':
             for task in data:
                 update_task(task)
             show_task_list(data)
 
-        if ans == 'show':
+        elif ans == 'show':
             show_task_list(data)
 
-        if ans == '0':
+        elif ans == 'exit':
             is_over = False
+
+        elif ans == 'edit':
+            edit_id = input("input the task id")
+            for task in data:
+                if task.id == eval(edit_id):
+                    print('----------edit task----------')
+                    title = input("new title: ")
+                    deadline = input("new deadline(example:2024-01-15 14:30): ")
+                    deadline = datetime.strptime(deadline, '%Y-%m-%d %H:%M')
+                    status = input("new status('已完成' or '已取消'): ")
+                    description = input("new description: ")
+                    starred = eval(input("new starred: "))
+                    if status == '已完成':
+                        status = TaskStatus.COMPLETED
+                        edit_task(task, title, deadline, status, description, starred)
+                    elif status == '已取消':
+                        status = TaskStatus.CANCELED
+                        edit_task(task, title, deadline, status, description, starred)
+                    else:
+                        print('输入有误')
+                        continue
+
+
+        else:
+            try:
+                input_id = eval(ans)
+            except BaseException:
+                print('id错误！')
+                break
+            for task in data:
+                if task.id == eval(ans):
+                    show_task_detail(task)
         # 退出程序
         if not is_over:
             break
-
 
 #将内存中的数据写入data.json
 save_data()
