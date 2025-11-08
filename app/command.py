@@ -9,34 +9,31 @@
 # 简单来说, controller.py 操作数据, command.py 操作输入输出.
 
 from typing import List
-
 from app.crud import update_task, save_data, delete_task,get_task
 from app.model import Task
 from app.controller import *
+from tabulate import tabulate
 
 def show_task_list(tasks: List[Task]):
-    # 打印任务列表
-    print(
-"""
-title          status             starred        id
-""")
+    table_data = []
     for task in tasks:
-        print(
-f"""
-{task.title}            {task.status.value}            {task.starred}             {task.id}
-""")
-
+        table_data.append([f"{task.title}",f"{task.status.value}",f"{task.starred}",f"{task.id}"])
+    headers = ["title","status","starred","id"]
+    print(tabulate(table_data, headers=headers, tablefmt="grid", stralign="left"))
 def show_task_detail(task: Task):
-    # 打印单一任务详情
-    print(
-"""
-title           status          starred         created_at          closed_at           deadline        description        id
-""")
     print(
 f"""
-{task.title}        {task.status.value}        {task.starred}     {task.created_at.strftime('%Y-%m-%d %H:%M')}       {task.closed_at.strftime('%Y-%m-%d %H:%M')}       {task.deadline.strftime('%Y-%m-%d %H:%M')}      {task.description}        {task.id}
+========main info========
+title:{task.title}
+status:{task.status.value}
+starred:{task.starred}
+created_at:{task.created_at}
+closed_at:{task.closed_at}
+deadline:{task.deadline}
+description:{task.description}
+id:{task.id}
+=========================
 """)
-
 def create_task():
     # 创建新任务
     # 注意这里只负责输入输出, 因此这里只进行引导用户输入各种信息.
