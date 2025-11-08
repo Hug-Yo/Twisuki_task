@@ -40,13 +40,13 @@ def init():
                 task.deadline = datetime.strptime(task.deadline, '%Y-%m-%d %H:%M')
                 task.created_at = datetime.strptime(task.created_at, '%Y-%m-%d %H:%M')
                 task.closed_at = datetime.strptime(task.closed_at, '%Y-%m-%d %H:%M')
-                if task.status == "待处理":
+                if task.status == "PENDING":
                     task.status = TaskStatus.PENDING
-                elif task.status == "已完成":
+                elif task.status == "COMPLETED":
                     task.status = TaskStatus.COMPLETED
-                elif task.status == "已取消":
+                elif task.status == "CANCELED":
                     task.status = TaskStatus.CANCELED
-                elif task.status == "已逾期":
+                elif task.status == "OVERDUE":
                     task.status = TaskStatus.OVERDUE
     except BaseException:
         return None
@@ -69,8 +69,6 @@ def get_task(task_id: int) -> Task | None:
     for read_task in data:
         if read_task.id == task_id:
             return read_task
-        else :
-            return None
     return None
 
 
@@ -92,7 +90,7 @@ def save_data():
                       'title':task.title,
                       'description':task.description,
                       'deadline':task.deadline.strftime('%Y-%m-%d %H:%M'),
-                      'status': task.status.value,
+                      'status': task.status.name,
                       'created_at': task.created_at.strftime('%Y-%m-%d %H:%M'),
                       'closed_at': task.created_at.strftime('%Y-%m-%d %H:%M'),
                       'starred': task.starred})

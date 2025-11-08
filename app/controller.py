@@ -5,7 +5,7 @@ from app.model import Task, TaskStatus
 from app.crud import data
 from app.filter import Filter, Order
 from datetime import datetime
-from app.crud import create_task as ct
+from app.crud import create_task as create_task_crud
 
 # 以查询星标任务为例.
 def get_starred_tasks() -> List[Task]:
@@ -23,6 +23,12 @@ def get_completed_tasks() -> List[Task]:
 def get_newest_task() -> Task | None:
     return Filter(data).order_by_create(Order.DESC).first()
 
+def get_pending_tasks() -> List[Task] | None:
+    return Filter(data).by_status(TaskStatus.PENDING).order_by_create(Order.DESC).all()
+
+def get_overdue_tasks() -> List[Task] | None:
+    return Filter(data).by_status(TaskStatus.OVERDUE).order_by_create(Order.DESC).all()
+
 #验证数据
 def create_task_info(title: str, deadline: str, description: str, starred: bool):
     try:
@@ -39,8 +45,8 @@ def create_task_info(title: str, deadline: str, description: str, starred: bool)
              deadline = datetime.strptime(deadline, "%Y-%m-%d %H:%M"),
              status = TaskStatus.PENDING,
              created_at = datetime.now(),
-             closed_at = None,
+             closed_at = datetime.now(),
              starred = starred)
-        ct(task)
+        create_task_crud(task)
         return None
 
